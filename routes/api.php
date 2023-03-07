@@ -27,14 +27,14 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::post('/register', [RegisterController::class , 'register']); // register
-Route::post('/login', [LoginController::class, 'login']); // login
+Route::post('auth/register', [RegisterController::class , 'register']); // register
+Route::post('auth/login', [LoginController::class, 'login']); // login
 
 
 
 // view & update profile
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/profile', [ProfilController::class, 'index']); // view
+    Route::get('/profile', [ProfilController::class, 'index']); // Detail Profil
     Route::put('/profile', [ProfilController::class, 'update']); // update
     Route::post('/logout', [LoginController::class, 'logout']); // logout
 });

@@ -44,7 +44,7 @@ class PostController extends Controller
                 'body.string' => 'Content harus berupa string.',
                 'body.max' => 'Content terlalu panjang. Maksimal 255 karakter.'
             ]);
-            $post = Post::create(array_merge($validatedData, ['user_id' => auth()->user()->id]));
+            $post = Post::create(array_merge($validatedData, ['created_by' => auth()->user()->id]));
             return response()->json([
                 'message' => 'Post Berhasil Di Buat.',
                 'post' => $post
