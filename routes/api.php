@@ -32,7 +32,13 @@ Route::post('auth/login', [LoginController::class, 'login']); // login
 
 
 
-// view & update profile
+// reset password
+Route::post('/reset-password', [ResetPasswordController::class, 'sendPasswordResetLink']);
+Route::post('/reset-password/{token}', [ResetPasswordController::class, 'reset']);
+
+
+
+// Detail & update profile
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [ProfilController::class, 'index']); // Detail Profil
     Route::put('/profile', [ProfilController::class, 'update']); // update
