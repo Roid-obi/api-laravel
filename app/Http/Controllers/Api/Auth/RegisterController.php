@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,6 +32,8 @@ class RegisterController extends Controller
             'password.string' => 'Password Harus berupa string.',
             'password.min' => 'Password Harus 8 karakter atau lebih'
         ]);
+
+
     
         if ($validator->fails()) {
             return response()->json([
@@ -42,7 +45,10 @@ class RegisterController extends Controller
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
         ]);
+        
         $token = $user->createToken('auth_token')->plainTextToken;
+        Auth::login($user);
+        
         return response()->json([
             'message' => 'Register Successfully.',
             'user' => $user,
