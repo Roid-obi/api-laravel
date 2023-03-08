@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilController;
@@ -33,9 +34,8 @@ Route::post('auth/login', [LoginController::class, 'login']); // login
 
 
 // reset password
-Route::post('/reset-password', [ResetPasswordController::class, 'sendPasswordResetLink']);
-Route::post('/reset-password/{token}', [ResetPasswordController::class, 'reset']);
-
+Route::post('/password/forgot',[ResetPasswordController::class, 'token']);
+Route::post('/password/reset',[ResetPasswordController::class, 'reset']);
 
 
 // Detail & update profile

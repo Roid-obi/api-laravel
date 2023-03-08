@@ -55,7 +55,7 @@ class CommentController extends Controller
             $comment->save();
     
             return response()->json([
-                'message' => 'Komentar telah ditambahkan.',
+                'message' => 'Komentar telah berhasil ditambahkan.',
                 'komentar' => $comment
             ], 201);
         } catch (\Exception $e) {
