@@ -13,6 +13,7 @@ use Illuminate\Validation\Rules\Password as RulesPassword;
 
 class ResetPasswordController extends Controller
 {
+    
     public function token(Request $request)
     {
         $request->validate([
@@ -31,19 +32,21 @@ class ResetPasswordController extends Controller
             'email' => [trans($status)]
         ]);
     }
+
+// ketika reset password
     public function reset(Request $request)
     {
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => ['required', RulesPassword::defaults()],
         ],[
             'token.required' => 'Token harus di isi.',
             'email.required' => 'Email harus di isi.',
             'email.email' => 'Email harus berupa valid email.',
             'password.required' => 'Password harus di isi.'
         ]);
-
+    
         $status = Password::reset(
             $request->only('email','password','token'),
             function ($user) use ($request) {
@@ -55,15 +58,26 @@ class ResetPasswordController extends Controller
                 event(new PasswordReset($user));
             }
         );
+    
+        // Jika sukses di reset
         if ($status == Password::PASSWORD_RESET) {
             return response()->json([
                 'status' => 'sukses',
                 'message' => 'Password Berhasil Di Update.'
             ]);
         }
+        // Jika token tidak valid atau kadaluarsa
+        if ($status == Password::INVALID_TOKEN) {
+            return response()->json([
+                'status' => 'gagal',
+                'message' => 'Token tidak valid atau sudah kadaluarsa.'
+            ], 422); // 422 adalah HTTP response code untuk Unprocessable Entity
+        }
+        // Jika gagal
         return response()->json([
             'status' => 'gagal',
             'message' => __($status)
         ],500);
     }
+    
 }

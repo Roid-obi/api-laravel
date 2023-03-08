@@ -70,8 +70,8 @@ Route::get('/post/{postId}/views', function ($postId) {
 
 // comment
 Route::middleware('auth:sanctum')->controller(CommentController::class)->group(function () {
-    Route::get('/post/{postId}/comments', 'index');
-    Route::post('/post/{postId}/comments', 'store');
-    Route::put('/comment/{id}', 'update');
-    Route::delete('/comment/{id}', 'destroy');
+    Route::get('/post/{postId}/comments', 'index'); //lihat comment
+    Route::post('/post/{postId}/comments', 'store'); //tambah comment
+    Route::put('/comment/{id}', 'update'); //update comment
+    Route::delete('/comment/{id}', 'destroy'); //hapus
 });

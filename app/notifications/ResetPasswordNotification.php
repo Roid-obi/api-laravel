@@ -46,7 +46,7 @@ class ResetPasswordNotification extends Notification
     {
         return (new MailMessage)
                     ->line('Lupa password ?')
-                    ->line('salin Token Ini ke dalam kolom "token"')
+                    ->line('Salin Token Ini ke dalam kolom "token"')
                     ->line($this->token)
                     ->line('kasihan');
     }

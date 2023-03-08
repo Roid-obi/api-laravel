@@ -52,7 +52,7 @@ class User extends Authenticatable
     }
 
 
-// notifikasi
+// notifikasi ambil token
     public function sendPasswordResetNotification($token)
     {
         $url = 'http://localhost:8000/password/reset?token=' . $token;
