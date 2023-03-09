@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\UserController;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,13 +30,15 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('auth/register', [RegisterController::class , 'register']); // register
-Route::post('auth/login', [LoginController::class, 'login']); // login
-
+ // login
+Route::post('auth/login', [LoginController::class, 'login'])
+    ->middleware(ThrottleRequests::class . ':5,1');
+    // Dengan demikian, jika pengguna mencoba login lebih dari 5 kali dalam 1 menit, maka sistem akan memberikan response 429 Too Many Requests. Konfigurasi throttle juga dapat disesuaikan dengan kebutuhan aplikasi.
 
 
 // reset password
 Route::post('/password/forgot',[ResetPasswordController::class, 'token']);
-Route::post('/password/reset',[ResetPasswordController::class, 'reset']);
+Route::post('/password/reset',[ResetPasswordController::class, 'reset'])->middleware(ThrottleRequests::class . ':5,1');
 
 
 // Detail & update profile
@@ -56,8 +59,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 //Post
+Route::get('/posts', [PostController::class , 'index']); // show all
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('posts', PostController::class);
+    Route::post('/posts', [PostController::class, 'store']); // create
+    Route::get('/posts/{post}', [PostController::class , 'show']); // show single
+    Route::put('/posts/{post}', [PostController::class, 'update']); // update
+    Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 });
 Route::get('/post/{postId}/views', function ($postId) {
     $post = Post::findOrFail($postId);
@@ -71,7 +78,7 @@ Route::get('/post/{postId}/views', function ($postId) {
 // comment
 Route::middleware('auth:sanctum')->controller(CommentController::class)->group(function () {
     Route::get('/post/{postId}/comments', 'index'); //lihat comment
-    Route::post('/post/{postId}/comments', 'store'); //tambah comment
-    Route::put('/comment/{id}', 'update'); //update comment
+    Route::post('/post/{postId}/comments', 'store')->middleware(ThrottleRequests::class . ':5,1'); //tambah comment
+    Route::put('/comment/{id}', 'update')->middleware(ThrottleRequests::class . ':5,1'); //update comment
     Route::delete('/comment/{id}', 'destroy'); //hapus
 });

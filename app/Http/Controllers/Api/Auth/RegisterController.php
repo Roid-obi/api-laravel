@@ -33,13 +33,14 @@ class RegisterController extends Controller
             'password.min' => 'Password Harus 8 karakter atau lebih'
         ]);
 
-
     
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
             ], 422);
         }
+
+
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -54,5 +55,6 @@ class RegisterController extends Controller
             'user' => $user,
             'access_token' => $token,
         ]);
+        
     }
 }

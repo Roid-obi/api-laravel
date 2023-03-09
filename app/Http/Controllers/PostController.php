@@ -15,11 +15,10 @@ class PostController extends Controller
      *
      *
      */
-    public function index()
-    {
-        $posts = Post::all();
+    public function index(Request $request) {
+        $posts = Post::paginate($request->input('per_page', 10));
         return response()->json([
-            'posts' => $posts,
+            'posts' => $posts
         ]);
     }
 

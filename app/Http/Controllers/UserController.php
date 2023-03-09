@@ -11,13 +11,20 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-
+    
     // semua user
-    public function index() {
+    public function index(Request $request) {
+        $users = User::paginate($request->input('per_page', 10));
         return response()->json([
-            'users' => User::all()
+            'users' => $users
         ]);
     }
+    // public function index() {
+    //     return response()->json([
+    //         'users' => User::all()
+    //     ]);
+    // }
+
 
     // salah satu user
     public function show($id) {
