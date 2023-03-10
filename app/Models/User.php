@@ -58,4 +58,9 @@ class User extends Authenticatable
         $url = 'http://localhost:8000/password/reset?token=' . $token;
         $this->notify(new ResetPasswordNotification($url, $token));
     }
+
+// mutator waktu 
+
+
+
 }

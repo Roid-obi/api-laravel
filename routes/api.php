@@ -28,15 +28,15 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-
+// register
 Route::post('auth/register', [RegisterController::class , 'register']); // register
- // login
+// login
 Route::post('auth/login', [LoginController::class, 'login'])
     ->middleware(ThrottleRequests::class . ':5,1');
     // Dengan demikian, jika pengguna mencoba login lebih dari 5 kali dalam 1 menit, maka sistem akan memberikan response 429 Too Many Requests. Konfigurasi throttle juga dapat disesuaikan dengan kebutuhan aplikasi.
 
 
-// reset password
+// Reset password
 Route::post('/password/forgot',[ResetPasswordController::class, 'token']);
 Route::post('/password/reset',[ResetPasswordController::class, 'reset'])->middleware(ThrottleRequests::class . ':5,1');
 
@@ -49,13 +49,28 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 //user
-Route::post('/users', [UserController::class, 'create']); // create
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/users', [UserController::class , 'index']); // show all
-    Route::get('/users/{id}', [UserController::class , 'show']); // show single
-    Route::put('/users/{id}', [UserController::class, 'update']); // update
-    Route::delete('/users/{id}', [UserController::class, 'destroy']); // delete
+Route::prefix('users')->middleware('auth:sanctum')->group(function() {
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/',  'index',); //show all
+        Route::post('/',  'create'); //create
+        Route::get('/{id}', 'show'); //show single
+        Route::put('/{id}', 'update'); //update
+        Route::delete('/{id}', 'destroy'); //delete
+        
+    });
 });
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/users', [UserController::class , 'index']); // show all
+//     Route::post('/users', [UserController::class, 'create']); // create
+//     Route::get('/users/{id}', [UserController::class , 'show']); // show single
+//     Route::put('/users/{id}', [UserController::class, 'update']); // update
+//     Route::delete('/users/{id}', [UserController::class, 'destroy']); // delete
+// });
+
+
+
+
+
 
 
 //Post
@@ -66,7 +81,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/posts/{post}', [PostController::class, 'update']); // update
     Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 });
-Route::get('/post/{postId}/views', function ($postId) {
+
+Route::get('/post/{postId}/views', function ($postId) { //view post
     $post = Post::findOrFail($postId);
     $view = $post->views;
     return response()->json([

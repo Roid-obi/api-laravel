@@ -45,8 +45,9 @@ class PostController extends Controller
             ]);
             $post = Post::create(array_merge($validatedData, ['created_by' => auth()->user()->id]));
             return response()->json([
+                'status' => 'sukses',
                 'message' => 'Post Berhasil Di Buat.',
-                'post' => $post
+                // 'post' => $post
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -99,8 +100,9 @@ class PostController extends Controller
             $post->save();
 
             return response()->json([
+                'status' => 'sukses',
                 'message' => 'Post Berhasil Di Perbaharui.',
-                'post' => $post
+                // 'post' => $post
             ]);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->getMessages();
