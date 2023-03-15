@@ -16,6 +16,7 @@ class Post extends Model
         'title',
         'body',
        'created_by',
+       'views'
     ];
 
     protected $casts = [

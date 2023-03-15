@@ -82,7 +82,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $user = $request->user();
+            $user = User::find($id);
 
             $validatedData = $request->validate([
                 'name' => 'nullable|string|min:3|max:255|unique:users,name',

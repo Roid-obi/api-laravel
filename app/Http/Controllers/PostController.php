@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -93,10 +94,9 @@ class PostController extends Controller
                 'body.string' => 'Content harus berupa string.',
                 'body.max' => 'Content terlalu panjang. Maksimal 255 karakter.'
             ]);
-
             $post->title = $validatedData['title'] ?? $post->title;
             $post->body = $validatedData['body'] ?? $post->body;
-            $post->user_id = $request->user()->id;
+            $post->created_by = $request->user()->id;
             $post->save();
 
             return response()->json([
@@ -115,7 +115,6 @@ class PostController extends Controller
     /*
      * Remove the specified resource from storage.
      *
-     *
      */
     public function destroy(Post $post)
     {
@@ -126,4 +125,105 @@ class PostController extends Controller
             'data' => $post
         ]);
     }
+
+
+    // Likes
+    // public function like($id, Request $request)
+    // {
+    //     try {
+    //         $post = Post::find($id);
+    //         $user = Auth::user()->id;
+
+    //         $data = $request->all();
+    //         $data['post_id'] = $post->id;
+    //         $data['user_id'] = $user;
+
+    //         PostLikes::create($data);
+
+    //        return response()->json([
+    //         "status" => "Success",
+    //         "massage" => "Post berhasil di like"
+    //        ], 200);
+    //     } catch (\Throwable $th) {
+    //         info($th);
+
+    //         return response()->json([
+    //             "status" => "Error",
+    //             "massage" => "Terjadi kesalahan pada saat like post",
+    //         ], 400);
+    //     }
+    // }
+
+    // public function unlike($id)
+    // {
+    //     try {
+    //         PostLikes::where('post_id', $id)->delete();
+    //         return response()->json([
+    //             "status" => "Success",
+    //             "massage" => "Post berhasil di unlike"
+    //            ], 200);
+
+    //     } catch (\Throwable $th) {
+    //         info($th);
+
+    //         return response()->json([
+    //             "status" => "Error",
+    //             "massage" => "Terjadi kesalahan pada saat like post",
+    //         ], 400);
+    //     }
+
+    // }
+
+
+
+
+    // Saves Post
+    // public function save(Request $request, $id)
+    // {
+
+    //     try {
+    //         $post = Post::findOrFail($id);
+    //         $user = Auth::user()->id;
+
+    //         $data = $request->all();
+    //         $data['post_id'] = $post->id;
+    //         $data['user_id'] = $user;
+
+
+    //         PostSave::create($data);
+
+    //         return response()->json([
+    //             "status" => "Success",
+    //             "massage" => "postingan berhasil di save",
+    //         ], 200);
+
+    //     } catch (\Throwable $th) {
+    //         info($th);
+
+    //         return response()->json([
+    //             "status" => "Error",
+    //             "massage" => "Terjadi kesalahan pada saat sedang save post",
+    //         ], 400);
+    //     }
+    // }
+
+    // public function unsave($id)
+    // {
+    //     try {
+    //         PostSave::where('post_id', $id)->delete();
+    //         return response()->json([
+    //             "status" => "Success",
+    //             "massage" => "Post berhasil di unsave"
+    //            ], 200);
+
+    //     } catch (\Throwable $th) {
+    //         info($th);
+
+    //         return response()->json([
+    //             "status" => "Error",
+    //             "massage" => "Terjadi kesalahan pada saat unsave post",
+    //         ], 400);
+    //     }
+    // }
+
 }
