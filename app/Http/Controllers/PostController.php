@@ -20,6 +20,7 @@ class PostController extends Controller
         $posts = Post::paginate($request->input('per_page', 10));
         return response()->json([
             'posts' => $posts
+            
         ]);
     }
 
@@ -33,17 +34,25 @@ class PostController extends Controller
         try {
             $validatedData = $request->validate([
                 'title' => 'required|string|min:3|unique:posts,title',
-                'body' => 'required|string|max:255'
+                'body' => 'required|string|max:255',
+                'tag' => 'required|integer',
             ],[
-                'body.required' => 'Title harus di isi.',
-                'body.string' => 'Title harus berupa string.',
-                'body.min' => 'Title harus memiliki 3 karakter atau lebih.',
-                'body.unique' => 'Title Sudah di pakai.',
+                'title.required' => 'Title harus di isi.',
+                'title.string' => 'Title harus berupa string.',
+                'title.min' => 'Title harus memiliki 3 karakter atau lebih.',
+                'title.unique' => 'Title Sudah di pakai.',
 
                 'body.required' => 'Content harus di isi.',
                 'body.string' => 'Content harus berupa string.',
-                'body.max' => 'Content terlalu panjang. Maksimal 255 karakter.'
+                'body.max' => 'Content terlalu panjang. Maksimal 255 karakter.',
+
+                'tag.required' => 'tag tidak boleh kosong dan pastikan anda sudah membuat tagnya',
+                'tag.integer' => 'pastikan anda memasukan id tagnya',
             ]);
+
+            
+
+
             $post = Post::create(array_merge($validatedData, ['created_by' => auth()->user()->id]));
             return response()->json([
                 'status' => 'sukses',

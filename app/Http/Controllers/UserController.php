@@ -63,6 +63,7 @@ class UserController extends Controller
             $user = User::create($validatedData);
 
             return response()->json([
+                'status' => 'sukses',
                 'message' => 'Data berhasil di buat.',
                 'data' => $user
             ],200);
@@ -104,7 +105,9 @@ class UserController extends Controller
             $user->save();
 
             return response()->json([
-                'data' => $user
+                'status' => 'sukses',
+                'message' => 'Data berhasil di update.',
+
             ]);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->getMessages();

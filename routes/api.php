@@ -5,7 +5,10 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostLikeController;
+use App\Http\Controllers\PostSaveController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -97,4 +100,27 @@ Route::middleware('auth:sanctum')->controller(CommentController::class)->group(f
     Route::post('/post/{postId}/comments', 'store')->middleware(ThrottleRequests::class . ':5,1'); //tambah comment
     Route::put('/comment/{id}', 'update')->middleware(ThrottleRequests::class . ':5,1'); //update comment
     Route::delete('/comment/{id}', 'destroy'); //hapus
+});
+
+
+
+Route::prefix('post')->group(function () {
+    Route::controller(PostLikeController::class)->group(function () {
+        Route::post('/like/{post}', 'store')->middleware('auth:sanctum');
+        Route::delete('/unlike/{like}', 'destroy')->middleware('auth:sanctum');
+    });
+    Route::controller(PostSaveController::class)->group(function () {
+        Route::post('/save/{post}', 'store')->middleware('auth:sanctum');
+        Route::get('/postsave', 'index')->middleware('auth:sanctum');
+        Route::delete('/unsave/{save}', 'destroy')->middleware('auth:sanctum');
+    });
+});
+
+
+Route::prefix('tag')->group(function () {
+    Route::controller(TagController::class)->group(function () {
+        Route::post('/create', 'store')->middleware('auth:sanctum');
+        Route::delete('/delete/{tag}', 'destroy')->middleware('auth:sanctum');
+        Route::put('/update/{tag}', 'update')->middleware('auth:sanctum');
+    });
 });

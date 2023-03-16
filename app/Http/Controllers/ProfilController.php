@@ -38,7 +38,9 @@ class ProfilController extends Controller
             $user->save();
 
             return response()->json([
-                'data' => $user
+                'status' => 'sukses',
+                'message' => 'Profile berhasil di update.',
+                // 'data' => $user
             ]);
         } catch (ValidationException $e) {
             $errors = $e->validator->errors()->getMessages();
