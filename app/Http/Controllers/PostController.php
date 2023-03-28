@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,10 +17,12 @@ class PostController extends Controller
      *
      *
      */
-    public function index(Request $request) {
+    public function index(Request $request,Post $post) {
+        $comments = comment::where('post_id',$post->id)->with('user:id,name')->get();
         $posts = Post::paginate($request->input('per_page', 10));
         return response()->json([
-            'posts' => $posts
+            'posts' => $posts,
+            'comment' => $comments
             
         ]);
     }
@@ -36,6 +39,7 @@ class PostController extends Controller
                 'title' => 'required|string|min:3|unique:posts,title',
                 'body' => 'required|string|max:255',
                 'tag' => 'required|integer',
+                'created_by' => auth()->user()->id
             ],[
                 'title.required' => 'Title harus di isi.',
                 'title.string' => 'Title harus berupa string.',
@@ -78,10 +82,12 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $comments = comment::where('post_id',$post->id)->with('user:id,name')->get();
         $post->views++;
         $post->save();
         return response()->json([
-            'post' => $post
+            'post' => $post,
+            'comment' => $comments,
         ]);
     }
 

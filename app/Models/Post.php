@@ -16,7 +16,8 @@ class Post extends Model
         'title',
         'body',
        'created_by',
-       'views'
+       'views',
+       
     ];
 
     protected $casts = [
@@ -32,7 +33,12 @@ class Post extends Model
     
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id',);
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function likes()

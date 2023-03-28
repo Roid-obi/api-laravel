@@ -10,6 +10,7 @@ use Throwable;
 
 class TagController extends Controller
 {
+
     public function store(Request $request)
     {
         // memvalidasi inputan post
@@ -35,7 +36,7 @@ class TagController extends Controller
                 'created_by' => Auth::user()->name
             ];
 
-            $tag = Tag::create($input);
+            Tag::create($input);
 
             return response()->json([
                 'status' => 'Sukses',

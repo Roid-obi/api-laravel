@@ -78,9 +78,10 @@ Route::prefix('users')->middleware('auth:sanctum')->group(function() {
 
 //Post
 Route::get('/posts', [PostController::class , 'index']); // show all
+Route::get('/posts/{post}', [PostController::class , 'show']); // show single
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [PostController::class, 'store']); // create
-    Route::get('/posts/{post}', [PostController::class , 'show']); // show single
+    
     Route::put('/posts/{post}', [PostController::class, 'update']); // update
     Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 });

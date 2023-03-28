@@ -48,7 +48,7 @@ class User extends Authenticatable
 // relasi
     public function posts()
     {
-        return $this->belongsTo(Post::class);
+        return $this->belongsTo(Post::class, 'created_by');
     }
 
 
