@@ -16,7 +16,7 @@ class CommentController extends Controller
      */
     public function index($postId)
     {
-        $comments = Comment::where('post_id',$postId)->get();
+        $comments = Comment::where('post_id',$postId)->with('user:id,name')->paginate(10);;
         return response()->json([
             'Komentar' => $comments
         ]);

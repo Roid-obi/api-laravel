@@ -38,7 +38,7 @@ class Post extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by')->select('id', 'name');
     }
 
     public function likes()

@@ -82,12 +82,14 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->load('createdBy'); // muat relasi createdBy
         $comments = comment::where('post_id',$post->id)->with('user:id,name')->get();
         $post->views++;
         $post->save();
         return response()->json([
             'post' => $post,
             'comment' => $comments,
+            'user' => $post->createdBy->name // ambil nama user dari relasi createdBy
         ]);
     }
 
