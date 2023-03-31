@@ -38,7 +38,7 @@ class PostController extends Controller
             $validatedData = $request->validate([
                 'title' => 'required|string|min:3|unique:posts,title',
                 'body' => 'required|string|max:255',
-                'tag' => 'required|integer',
+                'image' => 'image|nullable',
                 'created_by' => auth()->user()->id
             ],[
                 'title.required' => 'Title harus di isi.',
