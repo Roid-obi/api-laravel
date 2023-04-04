@@ -18,11 +18,9 @@ class PostController extends Controller
      *
      */
     public function index(Request $request,Post $post) {
-        $comments = comment::where('post_id',$post->id)->with('user:id,name')->get();
         $posts = Post::paginate($request->input('per_page', 10));
         return response()->json([
             'posts' => $posts,
-            'comment' => $comments
             
         ]);
     }
@@ -39,7 +37,7 @@ class PostController extends Controller
                 'title' => 'required|string|min:3|unique:posts,title',
                 'body' => 'required|string|max:255',
                 'image' => 'image|nullable',
-                'created_by' => auth()->user()->id
+                // 'created_by' => auth()->user()->id
             ],[
                 'title.required' => 'Title harus di isi.',
                 'title.string' => 'Title harus berupa string.',
@@ -50,8 +48,8 @@ class PostController extends Controller
                 'body.string' => 'Content harus berupa string.',
                 'body.max' => 'Content terlalu panjang. Maksimal 255 karakter.',
 
-                'tag.required' => 'tag tidak boleh kosong dan pastikan anda sudah membuat tagnya',
-                'tag.integer' => 'pastikan anda memasukan id tagnya',
+                // 'tag.required' => 'tag tidak boleh kosong dan pastikan anda sudah membuat tagnya',
+                // 'tag.integer' => 'pastikan anda memasukan id tagnya',
             ]);
 
             
