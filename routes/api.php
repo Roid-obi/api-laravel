@@ -79,6 +79,7 @@ Route::prefix('users')->middleware('auth:sanctum')->group(function() {
 //Post
 Route::get('/posts', [PostController::class , 'index']); // show all
 Route::get('/posts/{post}', [PostController::class , 'show']); // show single
+Route::get('/posts/tag/{tagName}', [PostController::class, 'postsByTag']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [PostController::class, 'store']); // create
     
@@ -120,6 +121,7 @@ Route::prefix('post')->group(function () {
 
 Route::prefix('tag')->group(function () {
     Route::controller(TagController::class)->group(function () {
+        Route::get('/', 'index');
         Route::post('/create', 'store')->middleware('auth:sanctum');
         Route::delete('/delete/{tag}', 'destroy')->middleware('auth:sanctum');
         Route::put('/update/{tag}', 'update')->middleware('auth:sanctum');

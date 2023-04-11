@@ -17,6 +17,7 @@ class Post extends Model
         'body',
        'created_by',
        'views',
+       'image'
        
     ];
 
@@ -49,8 +50,9 @@ class Post extends Model
     {
         return $this->hasMany(PostSave::class);
     }
-    public function tag()
+    public function tags()
     {
-        return $this->belongsToMany(Tag::class, "post_tag", "post_id", "tag_id");
+        return $this->belongsToMany(Tag::class);
     }
+
 }

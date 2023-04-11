@@ -18,7 +18,7 @@ class PostController extends Controller
      *
      */
     public function index(Request $request,Post $post) {
-        $posts = Post::paginate($request->input('per_page', 10));
+        $posts = Post::with('tags:id,name')->paginate($request->input('per_page', 10));
         return response()->json([
             'posts' => $posts,
             
@@ -36,7 +36,7 @@ class PostController extends Controller
             $validatedData = $request->validate([
                 'title' => 'required|string|min:3|unique:posts,title',
                 'body' => 'required|string|max:255',
-                'image' => 'image|nullable',
+                'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
                 // 'created_by' => auth()->user()->id
             ],[
                 'title.required' => 'Title harus di isi.',
@@ -52,10 +52,23 @@ class PostController extends Controller
                 // 'tag.integer' => 'pastikan anda memasukan id tagnya',
             ]);
 
-            
+            // proses upload gambar
+            if ($request->file('image')) {
+                $extension = $request->file('image')->getClientOriginalExtension();
+                $newImagesName = Auth::user()->name . '--' . now()->timestamp . '.' . $extension;
+    
+                $request->file('image')->storeAs('image', $newImagesName);
+                $data['image'] = $newImagesName;
+            }
 
 
             $post = Post::create(array_merge($validatedData, ['created_by' => auth()->user()->id]));
+
+            // simpan tag
+            if ($request->input('tags')) {
+                $post->tags()->attach($request->input('tags'));
+            }
+
             return response()->json([
                 'status' => 'sukses',
                 'message' => 'Post Berhasil Di Buat.',
@@ -80,14 +93,17 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post = $post->with('tags:id,name')->find($post->id);
         $post->load('createdBy'); // muat relasi createdBy
         $comments = comment::where('post_id',$post->id)->with('user:id,name')->get();
         $post->views++;
         $post->save();
+        
         return response()->json([
             'post' => $post,
+            // 'post' => $post,
             'comment' => $comments,
-            'user' => $post->createdBy->name // ambil nama user dari relasi createdBy
+            'user' => $post->createdBy->name, // ambil nama user dari relasi createdBy
         ]);
     }
 
@@ -114,6 +130,13 @@ class PostController extends Controller
             $post->created_by = $request->user()->id;
             $post->save();
 
+            // Update tags
+            if ($request->input('tags')) {
+                $post->tags()->sync($request->input('tags'));
+            } else {
+                $post->tags()->detach();
+            }
+
             return response()->json([
                 'status' => 'sukses',
                 'message' => 'Post Berhasil Di Perbaharui.',
@@ -138,6 +161,18 @@ class PostController extends Controller
         return response()->json([
             'message' => 'Post Berhasil Di Hapus.',
             'data' => $post
+        ]);
+    }
+
+    // muncul post berdasarkan tag
+    public function postsByTag(Request $request, $tagName)
+    {
+        $posts = Post::with('tags:id,name')->whereHas('tags', function ($query) use ($tagName) {
+            $query->where('name', $tagName);
+        })->paginate($request->input('per_page', 10));
+
+        return response()->json([
+            'posts' => $posts,
         ]);
     }
 
