@@ -32,28 +32,39 @@ class CommentController extends Controller
     {
         try {
             $user = auth()->user();
-    
+
             $validator = Validator::make($request->all(), [
                 'content' => 'required|string|min:3|max:255',
+                'parent_id' => 'nullable|exists:comments,id',
             ],[
                 'content.required' => 'Text harus di isi.',
                 'content.string' => 'Text harus berupa string.',
                 'content.min' => 'Text harus memiliki 3 karakter atau lebih.',
                 'content.max' => 'Text harus harus kurang dari 255.',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 400);
             }
-    
-            $comment = new comment([
+
+            $comment = new Comment([
                 'content' => $request->input('content'),
                 'user_id' => $user->id,
                 'post_id' => $postId,
             ]);
-    
+
+            // memasukkan id post ke parent_id
+            $parent_id = $request->input('parent_id');
+            if ($parent_id) {
+                $parentComment = Comment::find($parent_id);
+                if (!$parentComment) {
+                    return response()->json(['error' => 'Komentar induk tidak ditemukan.'], 404);
+                }
+                $parentComment->replies()->save($comment);
+            }
+
             $comment->save();
-    
+
             return response()->json([
                 'message' => 'Komentar telah berhasil ditambahkan.',
                 'komentar' => $comment
@@ -62,6 +73,7 @@ class CommentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Update the specified resource in storage.

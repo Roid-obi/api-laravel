@@ -33,24 +33,29 @@ class comment extends Model
         return $this->belongsTo(Post::class);
     }
 
+    public function replies()
+    {
+        return $this->hasMany(comment::class, 'parent_id');
+    }
 
-// mutator waktu
-protected $appends = ['created_at_parse','update_at_parse'];
+
+    // mutator waktu
+    protected $appends = ['created_at_parse','update_at_parse'];
 
 
-public function createdAtParse(): Attribute
-{
-    return Attribute::make(
-        get: fn ($value) => Carbon::parse($value)->translatedFormat("d F Y"),
-    );
-}
+    public function createdAtParse(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->translatedFormat("d F Y H:i:s"),
+        );
+    }
 
-public function updateAtParse(): Attribute
-{
-    return Attribute::make(
-        get: fn ($value) => Carbon::parse($value)->translatedFormat("d F Y"),
-    );
-}
+    public function updateAtParse(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->translatedFormat("d F Y H:i:s"),
+        );
+    }
 
 
 }

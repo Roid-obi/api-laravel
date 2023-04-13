@@ -101,7 +101,6 @@ class PostController extends Controller
         
         return response()->json([
             'post' => $post,
-            // 'post' => $post,
             'comment' => $comments,
             'user' => $post->createdBy->name, // ambil nama user dari relasi createdBy
         ]);
