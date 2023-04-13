@@ -34,7 +34,7 @@ class CommentController extends Controller
             $user = auth()->user();
 
             $validator = Validator::make($request->all(), [
-                'content' => 'required|string|min:3|max:255',
+                'content' => 'required|string|min:1|max:255',
                 'parent_id' => 'nullable|exists:comments,id',
             ],[
                 'content.required' => 'Text harus di isi.',
@@ -125,6 +125,11 @@ class CommentController extends Controller
     public function destroy($id)
     {
         $comment = comment::findOrFail($id);
+
+        $comment->replies()->update([
+            'parent_id' => null   //reply akan dibuat null agar jadi komen induk
+        ]);
+
         $comment->delete();
         return response()->json([
             'message' => 'Komentar berhasil di hapus.',
