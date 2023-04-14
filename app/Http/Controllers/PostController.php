@@ -37,6 +37,7 @@ class PostController extends Controller
                 'title' => 'required|string|min:3|unique:posts,title',
                 'body' => 'required|string|max:255',
                 'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
+                'is_pinned' => 'boolean',
                 // 'created_by' => auth()->user()->id
             ],[
                 'title.required' => 'Title harus di isi.',
@@ -116,7 +117,8 @@ class PostController extends Controller
         try {
             $validatedData = $request->validate([
                 'title' => 'nullable|string|min:3',
-                'body' => 'nullable|string|max:255'
+                'body' => 'nullable|string|max:255',
+                'is_pinned' => 'boolean',
             ],[
                 'title.string' => 'Title harus berupa string.',
                 'title.min' => 'Title harus lebih dari 3 karakter atau lebih.',
@@ -127,6 +129,7 @@ class PostController extends Controller
             $post->title = $validatedData['title'] ?? $post->title;
             $post->body = $validatedData['body'] ?? $post->body;
             $post->created_by = $request->user()->id;
+            $post->is_pinned = $validatedData['is_pinned'] ?? $post->is_pinned;
             $post->save();
 
             // Update tags

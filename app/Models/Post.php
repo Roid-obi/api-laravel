@@ -17,7 +17,8 @@ class Post extends Model
         'body',
        'created_by',
        'views',
-       'image'
+       'image',
+       'is_pinned'
        
     ];
 

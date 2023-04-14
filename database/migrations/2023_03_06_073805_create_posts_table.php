@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('body');
             $table->foreignId('created_by')->constrained('users','id')->onDelete('cascade');
             $table->unsignedBigInteger('views')->default(0);
+            $table->boolean('is_pinned')->default(false);
             $table->timestamps();
         });
     }
