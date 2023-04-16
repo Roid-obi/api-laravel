@@ -18,7 +18,7 @@ class Post extends Model
        'created_by',
        'views',
        'image',
-       'is_pinned'
+       'is_pinned',
        
     ];
 
@@ -54,6 +54,10 @@ class Post extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+    public function images()
+    {
+        return $this->belongsTo(Post::class,'image');
     }
 
 }
