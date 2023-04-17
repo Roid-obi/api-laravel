@@ -13,16 +13,18 @@ class ResetPasswordNotification extends Notification
 
     public $url;
     public $token;
+    public $email;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($url, $token)
+    public function __construct($url, $token, $email)
     {
         $this->url = $url;
         $this->token = $token;
+        $this->email = $email;
     }
 
     /**
@@ -44,11 +46,14 @@ class ResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $url = "http://localhost:5173/ResetPassword?token=$this->token&email=$this->email";
         return (new MailMessage)
+                    ->from('Roid@gmail.com', "Roid")
                     ->line('Lupa password ?')
-                    ->line('Salin Token Ini ke dalam kolom "token"')
+                    ->action('Klik', $url)
+                    ->line('Jika tidak bisa Paste Token Ini ke dalam kolom "token"')
                     ->line($this->token)
-                    ->line('kasihan');
+                    ->line("Gunakan Untuk Update");
     }
 
     /**

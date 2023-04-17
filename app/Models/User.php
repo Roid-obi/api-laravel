@@ -53,12 +53,12 @@ class User extends Authenticatable
 
 
 // notifikasi ambil token
-    public function sendPasswordResetNotification($token)
-    {
-        $url = 'http://localhost:8000/password/reset?token=' . $token;
-        $this->notify(new ResetPasswordNotification($url, $token));
-    }
-
+public function sendPasswordResetNotification($token)
+{
+    $url = 'http://localhost:8000/password/reset?token=' . $token;
+    $email = $this->email;
+    $this->notify(new ResetPasswordNotification($url, $token, $email));
+}
 // mutator waktu 
 
 
