@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostLikeController;
@@ -80,6 +81,7 @@ Route::prefix('users')->middleware('auth:sanctum')->group(function() {
 Route::get('/posts', [PostController::class , 'index']); // show all
 Route::get('/posts/{post}', [PostController::class , 'show']); // show single
 Route::get('/posts/tag/{tagName}', [PostController::class, 'postsByTag']);
+Route::get('/posts/category/{categoryName}', [PostController::class, 'postsByCategory']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [PostController::class, 'store']); // create
     
@@ -125,5 +127,14 @@ Route::prefix('tag')->group(function () {
         Route::post('/create', 'store')->middleware('auth:sanctum');
         Route::delete('/delete/{tag}', 'destroy')->middleware('auth:sanctum');
         Route::put('/update/{tag}', 'update')->middleware('auth:sanctum');
+    });
+});
+
+Route::prefix('category')->group(function () {
+    Route::controller(CategoryController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/create', 'store')->middleware('auth:sanctum');
+        Route::delete('/delete/{category}', 'destroy')->middleware('auth:sanctum');
+        Route::put('/update/{category}', 'update')->middleware('auth:sanctum');
     });
 });

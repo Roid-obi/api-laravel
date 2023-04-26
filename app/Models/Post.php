@@ -55,9 +55,13 @@ class Post extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
-    public function images()
+    public function categories()
     {
-        return $this->belongsTo(Post::class,'image');
+        return $this->belongsToMany(Category::class,);
     }
+    // public function images()
+    // {
+    //     return $this->belongsTo(Post::class,'image');
+    // }
 
 }

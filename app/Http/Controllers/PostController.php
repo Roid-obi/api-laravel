@@ -18,7 +18,7 @@ class PostController extends Controller
      *
      */
     public function index(Request $request,Post $post) {
-        $posts = Post::with('tags:id,name')->paginate($request->input('per_page', 10));
+        $posts = Post::with('tags:id,name')->with('categories:id,name')->paginate($request->input('per_page', 10));
         return response()->json([
             'posts' => $posts,
             
@@ -36,7 +36,7 @@ class PostController extends Controller
             $validatedData = $request->validate([
                 'title' => 'required|string|min:3|unique:posts,title',
                 'body' => 'required|string|max:255',
-                'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
+                'image' => 'nullable|image',
                 'is_pinned' => 'boolean',
                 // 'created_by' => auth()->user()->id
             ],[
@@ -68,6 +68,11 @@ class PostController extends Controller
             if ($request->input('tags')) {
                 $post->tags()->attach($request->input('tags'));
             }
+
+            // simpan category
+            if ($request->input('categories')) {
+                $post->categories()->attach($request->input('categories'));
+            }
     
             return response()->json([
                 'status' => 'sukses',
@@ -94,7 +99,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post = $post->with('tags:id,name')->find($post->id);
+        $post = $post->with('tags:id,name')->with('categories:id,name')->find($post->id);
         $post->load('createdBy'); // muat relasi createdBy
         $comments = comment::where('post_id',$post->id)->with('user:id,name')->get();
         $post->views++;
@@ -139,6 +144,13 @@ class PostController extends Controller
                 $post->tags()->detach();
             }
 
+            // Update tags
+            if ($request->input('categories')) {
+                $post->categories()->sync($request->input('categories'));
+            } else {
+                $post->categories()->detach();
+            }
+
             return response()->json([
                 'status' => 'sukses',
                 'message' => 'Post Berhasil Di Perbaharui.',
@@ -171,6 +183,18 @@ class PostController extends Controller
     {
         $posts = Post::with('tags:id,name')->whereHas('tags', function ($query) use ($tagName) {
             $query->where('name', $tagName);
+        })->paginate($request->input('per_page', 10));
+
+        return response()->json([
+            'posts' => $posts,
+        ]);
+    }
+
+    // muncul post berdasarkan category
+    public function postsByCategory(Request $request, $categoryName)
+    {
+        $posts = Post::with('categories:id,name')->whereHas('categories', function ($query) use ($categoryName) {
+            $query->where('name', $categoryName);
         })->paginate($request->input('per_page', 10));
 
         return response()->json([
